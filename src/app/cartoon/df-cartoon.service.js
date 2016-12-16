@@ -17,5 +17,12 @@
                 url: '/characters'
             })
         };
+
+        this.getBestCartoons = function (size) {
+            return $http({
+                method: 'GET',
+                url: '/cartoons?sortBy=rating,size=' + size
+            })
+        }
     }
 })();

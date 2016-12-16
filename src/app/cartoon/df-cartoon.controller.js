@@ -2,9 +2,9 @@
     'use strict';
     angular.module('df.core').controller('DfCartoonController', DfCartoonController);
 
-    function DfCartoonController() {
-        var dfCartoonCtrl = this;
+    DfCartoonController.$inject = ['DfCharacterService'];
 
-        dfCartoonCtrl.bestCartoons = [];
+    function DfCartoonController(DfCharacterService) {
+        this.bestCartoons = DfCharacterService.getBestCartoons(10);
     }
 })();
