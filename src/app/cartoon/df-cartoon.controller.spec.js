@@ -1,23 +1,25 @@
 'use strict';
 describe('DfCartoonController', function () {
-    var dfCartoonCtrl, $controller, $interval, DfCartonRefreshInterval;
+    var dfCartoonCtrl, $controller, $interval, $timeout, DfCartonRefreshInterval, DfShowAdvertTimeout,
+        DfCharacterServiceSpy;
 
     beforeEach(function () {
         module('df.core');
         inject(function ($injector) {
             $controller = $injector.get('$controller');
             $interval = $injector.get('$interval');
+            $timeout = $injector.get('$timeout');
             DfCartonRefreshInterval = $injector.get('DfCartonRefreshInterval');
+            DfShowAdvertTimeout = $injector.get('DfShowAdvertTimeout');
         });
+        DfCharacterServiceSpy = jasmine.createSpyObj('DfCharacterService', ['getBestCartoons']);
     });
 
     describe('#bestCartoons', function () {
-        var bestCartoons = ['Alladin'],
-            DfCharacterServiceSpy;
+        var bestCartoons = ['Alladin'];
 
         beforeEach(function () {
             bestCartoons = ['Alladin'];
-            DfCharacterServiceSpy = jasmine.createSpyObj('DfCharacterService', ['getBestCartoons'])
         });
 
         it('should get top 10 cartoons from service', function () {
@@ -48,6 +50,20 @@ describe('DfCartoonController', function () {
             it('should show latest best cartoons', function () {
                 expect(dfCartoonCtrl.bestCartoons).toEqual(secondBestCartoons);
             });
+        });
+    });
+
+    describe('#showAdvert', function () {
+        it('should be falsy after create', function () {
+            dfCartoonCtrl = $controller('DfCartoonController', {DfCharacterService: DfCharacterServiceSpy});
+            expect(dfCartoonCtrl.showAdvert).toBeFalsy();
+        });
+
+        it('should be true after DfShowAdvertTimeout is elapsed', function () {
+            dfCartoonCtrl = $controller('DfCartoonController', {DfCharacterService: DfCharacterServiceSpy});
+            $timeout.flush(DfShowAdvertTimeout);
+            expect(dfCartoonCtrl.showAdvert).toBeTruthy();
+            $timeout.verifyNoPendingTasks();
         });
     });
 });
