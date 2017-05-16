@@ -42,7 +42,8 @@ describe('DfCartoonService', function () {
             getCharactersRequest = $httpBackend.expect('GET', '/characters');
         });
 
-        afterEach(function() {
+        afterEach(function(done) {
+            done();
             $httpBackend.verifyNoOutstandingExpectation();
             $httpBackend.verifyNoOutstandingRequest();
         });
@@ -53,26 +54,24 @@ describe('DfCartoonService', function () {
             $httpBackend.flush();
         });
 
-        it('should get character from server', function () {
-            var characters;
-            var serverCharacters = [alladinCharacter, jasmineCharacter];
-            getCharactersRequest.respond(200, serverCharacters);
-            DfCartoonService.getCharacters().then(function (response) {
-                characters = response.data;
-            });
-            $httpBackend.flush();
-            expect(characters).toEqual(serverCharacters);
-        });
+        it('should get character from server', function (done) {
+			var serverCharacters = [alladinCharacter, jasmineCharacter];
+			getCharactersRequest.respond(200, serverCharacters);
+			DfCartoonService.getCharacters().then(function (response) {
+				expect(response.data).toEqual(serverCharacters);
+				done();
+			});
+			$httpBackend.flush();
+		});
 
-        it('should get error when server is not reachable', function () {
-            var error;
+        it('should get error when server is not reachable', function (done) {
             var errorMessage = 'Not Found';
             getCharactersRequest.respond(404, errorMessage);
             DfCartoonService.getCharacters().catch(function (response) {
-                error = response.data;
+				expect(response.data).toEqual(errorMessage);
+                done();
             });
             $httpBackend.flush();
-            expect(error).toEqual(errorMessage);
         });
     });
 });
