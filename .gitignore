@@ -1,6 +1,3 @@
 .idea/
 node_modules/
-bower_components/
 PhantomJS_2.1.1_(Windows_8_0.0.0)/
-
-yarn.lock
