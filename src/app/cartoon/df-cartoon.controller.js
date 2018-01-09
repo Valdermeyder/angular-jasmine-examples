@@ -1,23 +1,26 @@
 (function () {
-    'use strict';
-    angular.module('df.core').controller('DfCartoonController', DfCartoonController);
+	'use strict';
+	angular.module('df.core').controller('DfCartoonController', DfCartoonController);
 
-    DfCartoonController.$inject = ['DfCharacterService', '$interval', '$timeout', 'DfCartonRefreshInterval',
-        'DfShowAdvertTimeout'];
+	DfCartoonController.$inject = ['DfCartoonService', '$interval', '$timeout', 'DfCartonRefreshInterval',
+		'DfShowAdvertTimeout'];
 
-    function DfCartoonController(DfCharacterService, $interval, $timeout, DfCartonRefreshInterval, DfShowAdvertTimeout) {
-        var dfCartoonCtrl = this;
+	function DfCartoonController(DfCartoonService, $interval, $timeout, DfCartonRefreshInterval, DfShowAdvertTimeout) {
+		var dfCartoonCtrl = this;
+		dfCartoonCtrl.bestCartoons = [];
 
-        setBestCartoons();
+		setBestCartoons();
 
-        $interval(setBestCartoons, DfCartonRefreshInterval);
+		$interval(setBestCartoons, DfCartonRefreshInterval);
 
-        $timeout(function () {
-            dfCartoonCtrl.showAdvert = true;
-        }, DfShowAdvertTimeout);
+		$timeout(function () {
+			dfCartoonCtrl.showAdvert = true;
+		}, DfShowAdvertTimeout);
 
-        function setBestCartoons() {
-            dfCartoonCtrl.bestCartoons = DfCharacterService.getBestCartoons(10);
-        }
-    }
+		function setBestCartoons() {
+			DfCartoonService.getBestCartoons(10).then(function (bestCartoons) {
+				dfCartoonCtrl.bestCartoons = bestCartoons;
+			});
+		}
+	}
 })();
